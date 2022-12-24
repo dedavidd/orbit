@@ -3,8 +3,11 @@ from math import degrees
 from . import tle, utilities
 
 class satellite:
-    def __init__(self,catnr):
-        self.tle_raw = tle.get(catnr)
+    def __init__(self,catnr,rawtle=None):
+        if (rawtle is None):
+            self.tle_raw = tle.get(catnr)
+        else:
+            self.tle_raw = rawtle
         self.tle_parsed = tle.parse(self.tle_raw[0], self.tle_raw[1], self.tle_raw[2])
     
     def name(self):
