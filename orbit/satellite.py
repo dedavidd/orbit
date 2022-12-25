@@ -31,6 +31,12 @@ class satellite:
     def long(self):
         return degrees(self.tle_parsed.sublong)
     
+    def next_pass(self,observer):
+        return observer.next_pass(self.tle_parsed)
+        
+    def compute(self,observer):
+        return self.tle_parsed.compute(observer)
+        
     def elevation(self):
         return self.tle_parsed.elevation
         
