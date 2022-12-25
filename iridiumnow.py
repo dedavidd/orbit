@@ -54,24 +54,21 @@ visible = []
 predict = []
 for s in iridium.satellite:
     s.compute(obs)
+    if (s.tle_parsed.alt>obs.horizon):
+        visible += [s]
+
+obs.date = now - ephem.hour
+for s in iridium.satellite:
     nextpass = s.next_pass(obs)
     nextpass = [ nextpass ]
     nextpass += [s]
-    predict += [ nextpass ]
-    if (s.tle_parsed.alt>0.12):
-        visible += [s]
-
-print(now)
-print("currently %s satelites visible" % len(visible))
-obs.date = now - ephem.hour
-for s in visible:
-    print("---------------------------------")
-    showinfo(s)
-    nextpass = showobserverinfo(obs,s)
+    if (nextpass[0][0]>now):
+        predict += [ nextpass ]
 print("\ncurrently %s satelites visible" % len(visible))
+print(now)
 for s in visible:
     settime = s.next_pass(obs)[4]
-    print("%s: %s, %s visible for another %s" % (s.name(),s.tle_parsed.alt,s.tle_parsed.az,86400*(settime-now)))
+    print("%s: %s, %s visible for another %3.0f seconds" % (s.name(),s.tle_parsed.alt,s.tle_parsed.az,86400*(settime-now)))
 
 def getrisetime(elem):
     return(elem[0][0])
@@ -80,7 +77,7 @@ predict.sort(key=getrisetime)
 
 obs.date = now
 
-print("\n\nnext in view\n")
+print("\n\nnext in view\ntime now:          %s" % now)
 
 for i in range(0,5):
     print("---------------------------------")
